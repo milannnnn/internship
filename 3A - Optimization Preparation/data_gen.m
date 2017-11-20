@@ -65,19 +65,19 @@ save('../../Data/Generated Data/5 - Optimization/scenarios/scen_test');
 
 %% Load data:
 
-clear all;
-close all;
-
-load('../../Data/Generated Data/5 - Optimization/solutions/sol_test');
-
-a = sum(ON_dies')';
-figure();
-stairs(a);
-
-SOC = reshape(SOC_bat',[144*20 1]);
-figure();
-plot(SOC);
-
-PV_set =  reshape(P_PV_set',[144*20 1]);
-figure();
-plot(PV_set);
+% clear all;
+% close all;
+% 
+% load('../../Data/Generated Data/5 - Optimization/solutions/sol_test');
+% 
+% a = sum(ON_dies')';
+% figure();
+% stairs(a);
+% 
+% SOC = reshape(SOC_bat',[144*20 1]);
+% figure();
+% plot(SOC);
+% 
+% PV_set =  reshape(P_PV_set',[144*20 1]);
+% figure();
+% plot(PV_set);
