@@ -7,12 +7,12 @@ clc;
 load('../../Data/Generated Data/2 - Scenarios/cons_scen.mat')
 load('../../Data/Generated Data/2 - Scenarios/gen_scen.mat')
 
-interval = 1;
+interval = 98;
 
 %% Parameters:
 
 % We need to boost the system up to 10 generators (infeasable with 9)
-N_dies  =  12; % num of diesel generators
+N_dies  =  11; % num of diesel generators
 N_scen  =   5; % num of different scenations
 
 % %  5 MIN Data:
@@ -25,7 +25,7 @@ N_scen  =   5; % num of different scenations
 N_EMS   = 144; % num of remaining EMS   intervals (opt. executions)
 N_intra =  20; % num of remaining Intra intervals (opt. resolution)
 N_firm  =  18; % firm margin restriction (3h)
-delta_t = 0.5/60; % 30s
+delta_t = 0.5/60; % 30s in hours
 
 % 15 MIN Data:
 % N_EMS   =   96; % num of remaining EMS   intervals (opt. executions)
@@ -40,9 +40,10 @@ eta_bat  = 0.95;
 SOC_min  = 0.0;
 SOC_max  = 1.0;
 SOC_init = 0.9;
-Cap_bat  = 2000;
+Cap_bat  = 2200;
 P_dies_max = 1100.0;
-P_dies_min = 0.3*P_dies_max;
+% P_dies_min = 0.3*P_dies_max;
+P_dies_min = 0.15*P_dies_max;
 P_PV_inst = 20000;
 
 f_min = 48;
@@ -61,4 +62,19 @@ L_PV = shape_to( gen_scen(:,:,interval),N_intra);
 clear('cons_scen','gen_scen','scen');
 
 save('../../Data/Generated Data/5 - Optimization/scenarios/scen_test');
+
+%% Load data:
+
+% clear all;
+% close all;
+% 
+% load('../../Data/Generated Data/5 - Optimization/solutions/sol_test');
+% 
+% a = sum(ON_dies')';
+% figure();
+% stairs(a);
+% 
+% SOC = reshape(SOC_bat',[144*20 1]);
+% figure();
+% plot(SOC);
 

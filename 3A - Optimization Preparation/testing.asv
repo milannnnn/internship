@@ -6,11 +6,11 @@ load('../../Data/Generated Data/2 - Scenarios/cons_scen.mat')
 load('../../Data/Generated Data/2 - Scenarios/gen_scen.mat')
 
 ploting = 'yes';
-ploting = 'no';
+% ploting = 'no';
 
 max(max(max((cons_scen-gen_scen))));
 
-N_dies  =  11; % num of diesel generators
+N_dies  =  12; % num of diesel generators
 P_dies_max = 1100.0;
 marge_dies = 2200;
 
@@ -23,29 +23,25 @@ t_mean = (t_firm+1):t_final;
 
 %% Plot Desired interval:
 
-% interval = 20;
-% 
-% P_scen = P_dies_max*N_dies-cons_scen(:,:,interval)+gen_scen(:,:,interval);
-% P_mean = mean(P_dies_max*N_dies-cons_scen(:,:,interval)+gen_scen(:,:,interval),2);
-% 
-% figure(); hold all;
-% plot(t_scen,P_scen(t_scen,:));
-% plot(t_mean,P_mean(t_mean));
-% plot(marge_dies*ones(length(cons_scen),1),'r');
+interval = 20;
+
+P_scen = P_dies_max*N_dies-cons_scen(:,:,interval)+gen_scen(:,:,interval);
+P_mean = mean(P_dies_max*N_dies-cons_scen(:,:,interval)+gen_scen(:,:,interval),2);
+
+figure(); hold all;
+plot(t_scen,P_scen(t_scen,:));
+plot(t_mean,P_mean(t_mean));
+plot(marge_dies*ones(length(cons_scen),1),'r');
 
 %% Plot Desired interval:
 
-% interval = 20;
-% t_tot = 1:t_final;
-% P_delta = cons_scen(:,:,interval)-gen_scen(:,:,interval);
-% P_delta = cons_scen(:,:,interval);
-% % P_delta = gen_scen(:,:,interval);
-% 
-% figure(); hold all;
-% plot(t_tot,P_delta);
-% plot(t_tot,ones(t_final,1)*N_dies*P_dies_max,'r');
-% plot(t_tot,ones(t_final,1)*0.3*P_dies_max,'r');
+interval = 20;
+t_tot = 1:t_final;
+P_delta = cons_scen(:,:,interval)-gen_scen(:,:,interval);
 
+figure(); hold all;
+plot(t_tot,P_delta);
+plot(t_tot,ones(t_final,1)*,'r');
 
 %% Check each interval:
 
