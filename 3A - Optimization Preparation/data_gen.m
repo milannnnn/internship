@@ -7,12 +7,12 @@ clc;
 load('../../Data/Generated Data/2 - Scenarios/cons_scen.mat')
 load('../../Data/Generated Data/2 - Scenarios/gen_scen.mat')
 
-interval = 98;
+interval = 1;
 
 %% Parameters:
 
 % We need to boost the system up to 10 generators (infeasable with 9)
-N_dies  =  11; % num of diesel generators
+N_dies  =  12; % num of diesel generators
 N_scen  =   5; % num of different scenations
 
 % %  5 MIN Data:
@@ -65,16 +65,19 @@ save('../../Data/Generated Data/5 - Optimization/scenarios/scen_test');
 
 %% Load data:
 
-% clear all;
-% close all;
-% 
-% load('../../Data/Generated Data/5 - Optimization/solutions/sol_test');
-% 
-% a = sum(ON_dies')';
-% figure();
-% stairs(a);
-% 
-% SOC = reshape(SOC_bat',[144*20 1]);
-% figure();
-% plot(SOC);
+clear all;
+close all;
 
+load('../../Data/Generated Data/5 - Optimization/solutions/sol_test');
+
+a = sum(ON_dies')';
+figure();
+stairs(a);
+
+SOC = reshape(SOC_bat',[144*20 1]);
+figure();
+plot(SOC);
+
+PV_set =  reshape(P_PV_set',[144*20 1]);
+figure();
+plot(PV_set);
