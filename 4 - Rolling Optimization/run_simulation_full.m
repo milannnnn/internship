@@ -76,4 +76,10 @@ end
 %% Run Simulation:
 
 parameters_balanc;
+load_system('HEMS_v2')
+set_param('HEMS_v2', 'StopTime', sprintf('%d',t_final));
 sim('HEMS_v2');
+
+% f_max = max(F_HZ.Data(F_HZ.Time>t_init));
+% f_min = min(F_HZ.Data(F_HZ.Time>t_init));
+% SOC_0_next = SOC_act.Data(end);

@@ -40,10 +40,9 @@ eta_bat  = 0.95;
 SOC_min  = 0.0;
 SOC_max  = 1.0;
 SOC_init = 0.9;
-Cap_bat  = 2200;
+Cap_bat  = 1120;
 P_dies_max = 1100.0;
-% P_dies_min = 0.3*P_dies_max;
-P_dies_min = 0.15*P_dies_max;
+P_dies_min = 0.3*P_dies_max;
 P_PV_inst = 20000;
 
 f_min = 48;
