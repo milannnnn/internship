@@ -8,7 +8,7 @@ warning('off','all');
 T_EMS   = 600;
 T_intra =  30;
 
-k = 25;
+k = 100;
 
 % Simulation times:
 p_time_sim = T_EMS*k;
@@ -76,7 +76,7 @@ end
 %% Run Simulation:
 
 parameters_balanc;
-load_system('HEMS_v2')
+load_system('HEMS_v2');
 set_param('HEMS_v2', 'StopTime', sprintf('%d',t_final));
 sim('HEMS_v2');
 

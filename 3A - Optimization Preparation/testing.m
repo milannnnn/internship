@@ -6,13 +6,16 @@ load('../../Data/Generated Data/2 - Scenarios/cons_scen.mat')
 load('../../Data/Generated Data/2 - Scenarios/gen_scen.mat')
 
 ploting = 'yes';
-ploting = 'no';
+% ploting = 'no';
+
+my_params = load('../../Data/System Params/params');
 
 max(max(max((cons_scen-gen_scen))));
 
-N_dies  =  11; % num of diesel generators
-P_dies_max = 1100.0;
-marge_dies = 2200;
+N_dies  =  my_params.N_dies; % num of diesel generators
+P_dies_max = my_params.P_dies_max;
+marge_dies = my_params.marge_dies;
+% marge_dies = 2200;
 
 t_final = length(gen_scen);
 h_firm  = 3;

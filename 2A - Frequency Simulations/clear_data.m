@@ -1,7 +1,7 @@
 clear all;
 clc;
 
-load('../../Data/Generated Data/4 - Frequency/result_sim_new4');
+load('../../Data/Generated Data/4 - Frequency/result_sim');
 
 
 % f_min
@@ -9,8 +9,8 @@ load('../../Data/Generated Data/4 - Frequency/result_sim_new4');
 % P_bat
 % 
 
-ns = [ 3    4    5    6  7    8    9   10  11    12];
-fs = [47 47.2 47.5 47.8 48 48.1 48.3 48.6 48.5 48.7];
+ns = [ 3  4  5  6    7    8    9   10   11   12];
+fs = [47 47 47 47 47.2 47.5 47.8 48.1 48.2 48.2];
 
 k = 1;
 while k<=length(STRUCT)

@@ -5,7 +5,7 @@ clc;
 warning('off','all');
 
 my_power1 = -1.50e6;
-my_power2 = -3.50e6;
+my_power2 = -3.00e6;
 
 % ##################################### %
 % # CHECK my_power1 and my_power2 !!! #
@@ -35,11 +35,14 @@ field6 = 'f_min';       % minimum obtained frequency (after disturbance)
 % Structure initialization:
 STRUCT = struct(field1,[],field2,[],field3,[],field4,[],field5,[],field6,[],field7,[],field8,[]);
 
+my_params = load('../../Data/System Params/params');
 
 % % Definition of simulation scenarios (ranges):
-range_bat = -4000000:500000:4000000;    % initial battery power
-range_PV = 20000000:-500000:1000000;    % max available PV power (PV Curtailment - almost Setpoint)
-range_ndies = 1:12;                      % number of diesel generators
+range_bat = (my_params.P_bat_min:550:my_params.P_bat_max)*1e3;
+range_PV = (my_params.P_PV_inst*1e3):-0.25e6:1e6;    % max available PV power (PV Curtailment - almost Setpoint)
+range_ndies = 1:my_params.N_dies;       % number of diesel generators
+
+clear my_params;
 
 % range_bat =  -0000000;    % potencia inicial de la bateria
 % range_PV = 3000000;    % potencia màxima fotovoltaica
