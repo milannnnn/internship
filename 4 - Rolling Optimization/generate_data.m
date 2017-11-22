@@ -40,8 +40,12 @@ marge_dies = 2000;
 L_C  = shape_to(cons_scen(:,:,interval),N_intra);
 L_PV = shape_to( gen_scen(:,:,interval),N_intra);
 
+clear cons_scen gen_scen
+
 % save('../../Data/Generated Data/5 - Optimization/scenarios/scen_test');
 save(['../../Data/Generated Data/5 - Optimization/scenarios/scen_' num2str(interval)]);
+
+clear;
 
 end
 

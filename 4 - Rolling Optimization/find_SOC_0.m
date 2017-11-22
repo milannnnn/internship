@@ -66,7 +66,7 @@ pv_set_sim(:,1) = 1:t_final;
 pv_set_sim(1:t_init,2) = [zeros(t_init_dies,1); repmat(P_PV_set(1,1),t_init-t_init_dies,1)]*1e3;
 
 % Clear the unecessary data:
-clear interval ON_dies P_bat_set P_dies P_PV P_PV_set SOC_bat status
+clear interval ON_dies P_bat_set P_dies P_PV P_PV_set SOC_bat status P_bat_cha P_bat_dis X_bat
 clear cons_seg gen_seg
 
 % ### Loading Optimization Setpoints:
@@ -81,7 +81,7 @@ for q=1:k
     bat_set_sim(ts,2) = reshape(repmat(P_bat_set(1,:),T_intra,1),[T_EMS,1])*1e3;
     pv_set_sim(ts,2) = reshape(repmat(P_PV_set(1,:),T_intra,1),[T_EMS,1])*1e3;
 
-    clear interval ON_dies P_bat_set P_dies P_PV P_PV_set SOC_bat status
+    clear interval ON_dies P_bat_set P_dies P_PV P_PV_set SOC_bat status P_bat_cha P_bat_dis X_bat
 end
 
 % ### Run Simulation:
