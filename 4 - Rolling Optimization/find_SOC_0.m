@@ -9,6 +9,7 @@ if     my_interval==1
 elseif my_interval==2
     
     load('../../Data/Generated Data/5 - Optimization/solutions/sol_1');
+    SOC_act = sim_SOC_end(my_interval-2);
     SOC_0 = SOC_bat(2,1);
     
 else
@@ -113,6 +114,9 @@ sim('HEMS_part',[],options)
 save(['../../Data/Generated Data/5 - Optimization/states/state_' num2str(k)],'prev_st');
 
 % ### Return SOC:
+
+% save_system('HEMS_part');
+% close_system('HEMS_part');
 
 SOC_end = SOC_act.Data(end);
 

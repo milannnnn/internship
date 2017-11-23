@@ -9,7 +9,7 @@ T_EMS   = (24*3600)/my_params.N_EMS;
 T_intra =  T_EMS/my_params.N_intra;
 clear my_params;
 
-k  = 28;
+k  = 13;
 
 % Simulation times:
 p_time_sim = T_EMS*k;
@@ -28,6 +28,7 @@ t_final = t_init+p_time_sim;
 % ####################################################################### %
 
 load('../../Data/Generated Data/5 - Optimization/solutions/sol_1');
+% load('../../Data/Generated Data/5 - Optimization/scenarios/scen_1');
 load('../../Data/Generated Data/1 - Secondly/cons_seg');
 load('../../Data/Generated Data/1 - Secondly/gen_seg');
 
@@ -86,3 +87,10 @@ sim('HEMS_v2');
 % % f_max = max(F_HZ.Data(F_HZ.Time>t_init));
 % % f_min = min(F_HZ.Data(F_HZ.Time>t_init));
 SOC_0_next = SOC_act.Data(end)
+
+%% Test Scheme:
+% clc;
+% for q = 2:k
+%     my_prm = load(['../../Data/Generated Data/5 - Optimization/scenarios/scen_' num2str(q)]);
+%     SOC_act.Data(SOC_act.Time==(t_init+max((q-2),0)*T_EMS)) - my_prm.SOC_init
+% end
