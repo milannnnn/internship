@@ -10,7 +10,7 @@ C20 =12;    % capacitat C20
 C100 = 13;  % capacitat C100
 
 C_Batt = my_params.Cap_bat*1e3;  % Capacidad de la bateria en Wh
-SOC_o=0.5;     % SOC inicial pu
+SOC_o=my_params.SOC_init+4.2197e-04;     % SOC inicial pu
 
 tau_Conv_Bat = 0.01; %  constant de temps del convertidor i la bateria
 P_inv_bat    = my_params.P_bat_max*1e3; % potencia bateria en W

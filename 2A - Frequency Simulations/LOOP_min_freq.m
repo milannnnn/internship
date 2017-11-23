@@ -5,7 +5,7 @@ clc;
 warning('off','all');
 
 my_power1 = -1.50e6;
-my_power2 = -3.00e6;
+my_power2 = -2.75e6;
 
 % ##################################### %
 % # CHECK my_power1 and my_power2 !!! #
@@ -16,7 +16,7 @@ my_power2 = -3.00e6;
 % G_PV_steady   - C_steady      > -my_power2 %
 % ########################################## %
 
-f_acceptable = 46;
+f_acceptable = 45;
 
 % Noms de l'estructura d'informació    
     
@@ -64,6 +64,7 @@ end
 % Loop initialization:  
 k = 0;
 f_end = [];
+
 for Setp_Batt = range_bat
 	for potmax_pv_init = range_PV
          mindies = 12;
@@ -209,5 +210,4 @@ end
 STRUCT(1) = [];
 
 save('../../Data/Generated Data/4 - Frequency/result_sim','STRUCT');
-% save('../../Data/Generated Data/4 - Frequency/result_sim','STRUCT');
-% save('result_sim','STRUCT');
+

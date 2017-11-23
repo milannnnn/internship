@@ -5,8 +5,10 @@ clc;
 warning('off','all');
 
 
-T_EMS   = 600;
-T_intra =  30;
+my_params = load('../../Data/System Params/params');
+T_EMS   = (24*3600)/my_params.N_EMS;
+T_intra =  T_EMS/my_params.N_intra;
+clear my_params;
 
 n = 65;
 

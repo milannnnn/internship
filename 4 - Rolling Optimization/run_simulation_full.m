@@ -4,11 +4,12 @@ clc;
 
 warning('off','all');
 
+my_params = load('../../Data/System Params/params');
+T_EMS   = (24*3600)/my_params.N_EMS;
+T_intra =  T_EMS/my_params.N_intra;
+clear my_params;
 
-T_EMS   = 600;
-T_intra =  30;
-
-k = 100;
+k  = 28;
 
 % Simulation times:
 p_time_sim = T_EMS*k;
@@ -76,10 +77,12 @@ end
 %% Run Simulation:
 
 parameters_balanc;
+
+% [checksum,details] = Simulink.BlockDiagram.getChecksum('HEMS_v2')
 load_system('HEMS_v2');
 set_param('HEMS_v2', 'StopTime', sprintf('%d',t_final));
 sim('HEMS_v2');
 
-% f_max = max(F_HZ.Data(F_HZ.Time>t_init));
-% f_min = min(F_HZ.Data(F_HZ.Time>t_init));
-% SOC_0_next = SOC_act.Data(end);
+% % f_max = max(F_HZ.Data(F_HZ.Time>t_init));
+% % f_min = min(F_HZ.Data(F_HZ.Time>t_init));
+SOC_0_next = SOC_act.Data(end)
