@@ -9,7 +9,7 @@ T_EMS   = (24*3600)/my_params.N_EMS;
 T_intra =  T_EMS/my_params.N_intra;
 clear my_params;
 
-k  = 13;
+k  = 96;
 
 % Simulation times:
 p_time_sim = T_EMS*k;

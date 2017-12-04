@@ -5,7 +5,7 @@ clc;
 warning('off','all');
 
 my_power1 = -1.50e6;
-my_power2 = -2.75e6;
+my_power2 = -3.50e6;
 
 % ##################################### %
 % # CHECK my_power1 and my_power2 !!! #
@@ -210,4 +210,5 @@ end
 STRUCT(1) = [];
 
 save('../../Data/Generated Data/4 - Frequency/result_sim','STRUCT');
+% save('../../Data/Generated Data/4 - Frequency/result_sim_new','STRUCT');
 

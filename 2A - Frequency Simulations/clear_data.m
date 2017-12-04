@@ -1,7 +1,7 @@
 clear all;
 clc;
 
-load('../../Data/Generated Data/4 - Frequency/result_sim_1');
+load('../../Data/Generated Data/4 - Frequency/result_sim_new');
 
 
 % f_min
@@ -23,7 +23,7 @@ end
 
 k=1;
 while k<=length(STRUCT)
-    if(STRUCT(k).f_min < 47.3)
+    if(STRUCT(k).f_min < 47.0)
         STRUCT(k) = [];
         k = k-1;
     end
