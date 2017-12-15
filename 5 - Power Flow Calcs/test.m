@@ -89,5 +89,5 @@ end
 % b = runpf(a);
 b = runopf(a);
 
-
+sum(real(get_losses(b)))
 
