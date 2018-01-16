@@ -38,9 +38,10 @@ P_cons_MAX = 11.5;
 % Bus 9 -  40% Load Consumption
 
 % Data:
-field1 = 'n_dies_1';    % numeber of diesel gen at bus 1
-field2 = 'n_dies_2';    % numeber of diesel gen at bus 2
-field3 = 'n_dies_3';    % numeber of diesel gen at bus 3
+field0 = 'n_dies_tot';  % total number of diesel gen
+field1 = 'n_dies_1';    % number of diesel gen at bus 1
+field2 = 'n_dies_2';    % number of diesel gen at bus 2
+field3 = 'n_dies_3';    % number of diesel gen at bus 3
 field4 = 'P_bat';       % Battery Power
 field5 = 'P_pv';        % PV Generation
 field6 = 'P_cons';      % Load Consumption
@@ -51,7 +52,7 @@ field8 = 'U_max';       % Minimum Grid Voltage
 field9 = 'P_loss';      % Total Grid Losses
     
 % Structure initialization:
-STRUCT = struct(field1,[],field2,[],field3,[],field4,[],field5,[],field6,[],field7,[],field8,[],field9,[]);
+STRUCT = struct(field0,[],field1,[],field2,[],field3,[],field4,[],field5,[],field6,[],field7,[],field8,[],field9,[]);
 
 my_params = load('../../Data/System Params/params');
 
@@ -60,6 +61,8 @@ P_dies_min = my_params.P_dies_min/1e3;
 
 range_bat   = (my_params.P_bat_min:1100:my_params.P_bat_max)/1e3;
 range_PV    = (my_params.P_PV_inst/1e3):-1.5:1;
+deltas = [0.15, 0.35, 0.5, 0.65, 0.85];
+deltas = [0.2, 0.35, 0.5, 0.65, 0.8];
 
 % Divide Dies Generator in 3 groups (for buses):
 groups = 3;
@@ -69,23 +72,27 @@ for k = (groups-1):-1:1
 end
 n_gens = sort(n_gens,'descend');
 
+% range_bat   = (my_params.P_bat_min:2200:my_params.P_bat_max)/1e3;
+% range_PV    = (my_params.P_PV_inst/1e3):-3:1;
 
-range_bat   = (my_params.P_bat_min:2200:my_params.P_bat_max)/1e3;
-range_PV    = (my_params.P_PV_inst/1e3):-3:1;
-
-tot = n_gens(1)*(n_gens(2)+1)*(n_gens(3)+1)*length(range_PV)*length(range_bat)*3;
+tot = n_gens(1)*(n_gens(2)+1)*(n_gens(3)+1)*length(range_PV)*length(range_bat)*length(deltas);
+tot = n_gens(1)*n_gens(2)*n_gens(3)*length(range_PV)*length(range_bat)*length(deltas);
 prog = 1;
 
 %%
 % Loop over all generator combinations:
 for d1 = 1:n_gens(1)
-for d2 = 0:n_gens(2)
-for d3 = 0:n_gens(3)
+for d2 = 1:n_gens(2)
+for d3 = 1:n_gens(3)
     
     % Scale the Capability Curve Params:
     a.gen(1,inds) = a_gen_org(inds)*d1;
     a.gen(2,inds) = a_gen_org(inds)*d2;
     a.gen(3,inds) = a_gen_org(inds)*d3;
+    
+    % If we have no generation, switch the buses to PQ (0+j0)MVA:
+    a.bus(2,2)= 1*(d2==0) + 2*(d2~=0);
+    a.bus(3,2)= 1*(d3==0) + 2*(d3~=0);
     
     % Loop over all PV generation:
     for P_pv = range_PV
@@ -104,7 +111,7 @@ for d3 = 0:n_gens(3)
             a.bus(6,4) =  0; % assuming cos_fi=1
             
             % Loop over different Consumption:
-            for delta = [0.1, 0.5, 0.9]
+            for delta = deltas
                 
                 fprintf('%d/%d\n', prog, tot);
                 prog = prog+1;
@@ -133,7 +140,7 @@ for d3 = 0:n_gens(3)
                         U_max  = max(b.bus(4:end, 8)); %disregard dies bus
                         P_loss = sum(real(get_losses(b)));
                         
-                        STRUCT(length(STRUCT)+1) = struct(field1,d1,field2,d2,field3,d3,field4,P_bat,field5,P_pv,field6,P_cons,field7,U_min,field8,U_max,field9,P_loss);
+                        STRUCT(length(STRUCT)+1) = struct(field0,d1+d2+d3,field1,d1,field2,d2,field3,d3,field4,P_bat,field5,P_pv,field6,P_cons,field7,U_min,field8,U_max,field9,P_loss);
                         
                     end
                 end
