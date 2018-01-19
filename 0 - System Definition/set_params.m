@@ -50,8 +50,8 @@ f_min = 49;
 f_max = 51;
 
 % ### Voltage:
-% U_min_def = 0.9;
-U_min_def = 0.875;
+U_min_def = 0.9;
+% U_min_def = 0.875;
 
 save('../../Data/System Params/params');
 
