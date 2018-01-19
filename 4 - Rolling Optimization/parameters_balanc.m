@@ -5,6 +5,8 @@
 
 my_params = load('../../Data/System Params/params');
 
+load('../../Data/Generated Data/6 - Power Flows/psi_loss');
+
 C5= 10;     % capacitat C5
 C20 =12;    % capacitat C20
 C100 = 13;  % capacitat C100

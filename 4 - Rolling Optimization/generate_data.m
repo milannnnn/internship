@@ -11,6 +11,8 @@ load('../../Data/Generated Data/2 - Scenarios/gen_scen.mat')
 
 load('../../Data/System Params/params');
 load('../../Data/Generated Data/4 - Frequency/theta');
+load('../../Data/Generated Data/6 - Power Flows/psi_min');
+load('../../Data/Generated Data/6 - Power Flows/psi_loss');
 
 SOC_init = find_SOC_0(interval);
 

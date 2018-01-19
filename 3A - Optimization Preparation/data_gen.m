@@ -7,7 +7,7 @@ clc;
 load('../../Data/Generated Data/2 - Scenarios/cons_scen.mat')
 load('../../Data/Generated Data/2 - Scenarios/gen_scen.mat')
 
-% interval = 1;
+interval = 1;
 % figure(); hold all;
 % plot(cons_scen(:,:,interval))
 % plot( gen_scen(:,:,interval))
@@ -17,6 +17,8 @@ load('../../Data/Generated Data/2 - Scenarios/gen_scen.mat')
 
 load('../../Data/System Params/params');
 load('../../Data/Generated Data/4 - Frequency/theta');
+load('../../Data/Generated Data/6 - Power Flows/psi_min');
+load('../../Data/Generated Data/6 - Power Flows/psi_loss');
 
 L_C  = shape_to(cons_scen(:,:,interval),N_intra);
 L_PV = shape_to( gen_scen(:,:,interval),N_intra);

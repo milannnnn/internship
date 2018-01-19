@@ -44,8 +44,14 @@ SOC_init = 0.9;
 P_PV_inst = 15000;
 
 % ### Frequency:
-f_min = 48.5;
-f_max = 51.5;
+% f_min = 48.75;
+% f_max = 51.25;
+f_min = 49;
+f_max = 51;
+
+% ### Voltage:
+% U_min_def = 0.9;
+U_min_def = 0.875;
 
 save('../../Data/System Params/params');
 

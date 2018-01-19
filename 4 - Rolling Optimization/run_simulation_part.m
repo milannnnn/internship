@@ -9,7 +9,7 @@ T_EMS   = (24*3600)/my_params.N_EMS;
 T_intra =  T_EMS/my_params.N_intra;
 clear my_params;
 
-k = 11;
+k = 45;
 
 % Simulation times:
 p_time_sim = T_EMS*k;
@@ -46,12 +46,12 @@ num_dies_sim = zeros(t_final,2);
 num_dies_sim(:,1) = 1:t_final;
 num_dies_sim(1:t_init,2) = repmat(sum(ON_dies(1,:)),t_init,1);
 
-% Secondly data for number of online dies generators:
+% Secondly data for battery setpoint:
 bat_set_sim = zeros(t_final,2);
 bat_set_sim(:,1) = 1:t_final;
 bat_set_sim(1:t_init,2) = [zeros(t_init_dies,1); repmat(P_bat_set(1,1),t_init-t_init_dies,1)]*1e3;
 
-% Secondly data for number of online dies generators:
+% Secondly data for pv setpoint:
 pv_set_sim = zeros(t_final,2);
 pv_set_sim(:,1) = 1:t_final;
 pv_set_sim(1:t_init,2) = [zeros(t_init_dies,1); repmat(P_PV_set(1,1),t_init-t_init_dies,1)]*1e3;

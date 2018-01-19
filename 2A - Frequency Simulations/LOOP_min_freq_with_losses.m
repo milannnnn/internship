@@ -4,8 +4,16 @@ clc;
 
 warning('off','all');
 
-my_power1 = -1.50e6;
-my_power2 = -3.50e6;
+% my_power1 = -1.50e6;
+% my_power2 = -3.50e6;
+% my_power1 = -0.25e6;
+% my_power2 = -0.25e6;
+my_power1 = 0.00e6;
+my_power2 = 0.00e6;
+
+dist_factor = 0.5; % disturbance reduction factor 
+                   % (org +5MW Cons and -5MW gen)
+                   % we assume they are not simultaneous => 50% + 50%
 
 % ##################################### %
 % # CHECK my_power1 and my_power2 !!! #
@@ -27,22 +35,33 @@ field3 = 'P_bat';       % initial battery power
 field4 = 'P_pv_curt';   % max available PV power
 field7 = 'min_dies';    % min required n of dies gen for feasable simulation
 field8 = 'addit_dies';  % diff between act and min dies (num_dies-min_dies)
+field9 = 'cons_init';   % initial consumption power
 
 % Results:
 field5 = 'f_max';       % maximum obtained frequency (after disturbance)
 field6 = 'f_min';       % minimum obtained frequency (after disturbance)
     
 % Structure initialization:
-STRUCT = struct(field1,[],field2,[],field3,[],field4,[],field5,[],field6,[],field7,[],field8,[]);
+STRUCT = struct(field1,[],field2,[],field3,[],field4,[],field5,[],field6,[],field7,[],field8,[],field9,[]);
 
 my_params = load('../../Data/System Params/params');
 
-load('../../Data/Generated Data/6 - Power Flows/psi_loss');
+% load('../../Data/Generated Data/6 - Power Flows/psi_loss');
 
 % % Definition of simulation scenarios (ranges):
 range_bat = (my_params.P_bat_min:550:my_params.P_bat_max)*1e3;
 range_PV = (my_params.P_PV_inst*1e3):-0.25e6:1e6;    % max available PV power (PV Curtailment - almost Setpoint)
 range_ndies = 1:my_params.N_dies;       % number of diesel generators
+
+% range_bat = (my_params.P_bat_min:2200:my_params.P_bat_max)*1e3;
+% range_bat = (my_params.P_bat_max)*1e3;
+% range_PV = (my_params.P_PV_inst*1e3):-3.5e6:1e6;    % max available PV power (PV Curtailment - almost Setpoint)
+% range_ndies = 1:1:my_params.N_dies;       % number of diesel generators
+
+% range_bat = (my_params.P_bat_min)*1e3;
+% range_PV = (my_params.P_PV_inst*1e3);    % max available PV power (PV Curtailment - almost Setpoint)
+% % range_PV = (my_params.P_PV_inst*1e3-7.5e6);    % max available PV power (PV Curtailment - almost Setpoint)
+% range_ndies = 12;       % number of diesel generators
 
 clear my_params;
 
@@ -99,6 +118,9 @@ for Setp_Batt = range_bat
             load('../../Data/Generated Data/3 - Changes/M_change_pos.mat')
             load('../../Data/Generated Data/3 - Changes/M_change_neg.mat')
             
+            change_con_pos     = dist_factor*change_con_pos;
+            change_gen_all_neg = dist_factor*change_gen_all_neg;
+            
             % Increase in Consumption and decrease of generation
             consum_sim((t_init+1):(t_init+p_time_sim),1) = ((t_init+1):(t_init+p_time_sim))';
             % superpose the obtained max cons change vector (since it's shorter -> when it runs out, just repeat the last element) !!!
@@ -141,7 +163,7 @@ for Setp_Batt = range_bat
             % Check for: - system stability (MIN TOTAL AVILABLE GEN has to overshoot MAX CONS by at least 0.5MW)
             %            - renewable utilization in steady st. (less than 0.5MW cons should be matched by diesel) 
             %
-            %   1st OR term -  does the min total available generation overshoot the max consumption by more than 0.5MW??? 
+            %   1st OR term -  does the min total available generation overshoot the max consumption by more than my_power1 (0.5MW)??? 
             %               -> Do we have enough reserve during DISTURBANCE (min GEN & max CONS) !!!  
             %   2nd OR term -  does the max PV + BAT (without DIES) lag the min consumption by less than 0.5MW??? 
             %               -> Do we have a good matching of PV/Bat and Cons in STEADY STATE (max GEN & min CONS)???  
@@ -149,14 +171,17 @@ for Setp_Batt = range_bat
             %                  "positive feedback term" -> if it ever gets true it will run the while loop until 1st AND term breaks the loop!!!
 %             my_power1 = 0.5e6;
 %             my_power2 = 0.5e6;
-
-            while  (cons_init>0) && (  ((max(consum_sim((lenad-100):end,2))-min(potmax_pv_sim((lenad-100):end,2))-n_diesels*P_nom_u_GS-Setp_Batt)>-my_power1) ...
-                                     ||((min(consum_sim((lenad-100):end,2))-max(potmax_pv_sim((lenad-100):end,2))-Setp_Batt)<my_power2) )
-                            
-                
+            
+            P_loss_max = psi_loss_i*1e6+psi_loss_d*1e6*n_diesels+psi_loss_p*min(potmax_pv_sim((lenad-100):end,2))+psi_loss_b*Setp_Batt+psi_loss_c*max(consum_sim((lenad-100):end,2));
+            P_loss_min = psi_loss_i*1e6+psi_loss_d*1e6*n_diesels+psi_loss_p*max(potmax_pv_sim((lenad-100):end,2))+psi_loss_b*Setp_Batt+psi_loss_c*min(consum_sim((lenad-100):end,2));
+            
+            while  (cons_init>0) && (  ((max(consum_sim((lenad-100):end,2))+P_loss_max-min(potmax_pv_sim((lenad-100):end,2))-n_diesels*P_nom_u_GS-Setp_Batt)>-my_power1) ...
+                                     ||((min(consum_sim((lenad-100):end,2))+P_loss_min-max(potmax_pv_sim((lenad-100):end,2))-Setp_Batt)<my_power2) )
+%                                      ||((min(consum_sim((lenad-100):end,2))+P_loss_min-max(potmax_pv_sim((lenad-100):end,2))-Setp_Batt)<my_power2) )
+                                
                 % We repeat the loop until we get:
                 %
-                % G_disturbance - C_disturbance >  my_power1 # we can compnsate the difference !!! 
+                % G_disturbance - C_disturbance >  my_power1 # we can compensate the difference !!! 
                 % G_PV_steady   - C_steady      < -my_power2 # cons is matched by PV in steady state!!! 
                 
                 % We decrease the initial consumption and recalculate the vector: 
@@ -171,21 +196,26 @@ for Setp_Batt = range_bat
                 consum_sim((t_init+1):(t_init+p_time_sim),2) = [(cons_init+change_con_pos(1:p_time_sim)*1000)];
                 
                 %lenad = (t_init)/(t_init+p_time_sim)*1000;
-                
+                                
                 % Increase resolution of data 
                 x = 1:length(consum_sim(:,2));
                 y1 = consum_sim(:,2);
                 ces1 = spline(x,y1);
                 xx = linspace(1,length(consum_sim(:,2)),1000);
 
-                consum_sim = [xx' ppval(ces1,xx)'];               
+                consum_sim = [xx' ppval(ces1,xx)'];   
+                
+                % Recalculate the losses:
+                P_loss_max = psi_loss_i*1e6+psi_loss_d*1e6*n_diesels+psi_loss_p*min(potmax_pv_sim((lenad-100):end,2))+psi_loss_b*Setp_Batt+psi_loss_c*max(consum_sim((lenad-100):end,2));
+                P_loss_min = psi_loss_i*1e6+psi_loss_d*1e6*n_diesels+psi_loss_p*max(potmax_pv_sim((lenad-100):end,2))+psi_loss_b*Setp_Batt+psi_loss_c*min(consum_sim((lenad-100):end,2));
+
             end
             
             
             % Run the simulation and save results:
             if (cons_init>0)
                 
-                sim('HEMS_v1')
+                sim('HEMS_v2')
 
                 % SOLUTION
                 f_max = max(F_HZ.Data(F_HZ.Time>t_init));
@@ -199,7 +229,7 @@ for Setp_Batt = range_bat
                 
                 if(f_min > f_acceptable)
                     fprintf('Min Dies = %d\n', mindies);
-                    STRUCT(length(STRUCT)+1) = struct(field1,str_RES,field2,n_diesels,field3,Setp_Batt,field4,potmax_pv_init,field5,f_max,field6,f_min,field7,mindies,field8,n_diesels-mindies);
+                    STRUCT(length(STRUCT)+1) = struct(field1,str_RES,field2,n_diesels,field3,Setp_Batt,field4,potmax_pv_init,field5,f_max,field6,f_min,field7,mindies,field8,n_diesels-mindies,field9,cons_init);
                 else
                     fprintf('Disregarding - f_min = %d\n', f_min);
                 end
