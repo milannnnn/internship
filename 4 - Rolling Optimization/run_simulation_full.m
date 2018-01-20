@@ -10,7 +10,7 @@ T_intra =  T_EMS/my_params.N_intra;
 clear my_params;
 
 k  = 96;
-k  = 47;
+% k  = 59;
 
 % Simulation times:
 p_time_sim = T_EMS*k;

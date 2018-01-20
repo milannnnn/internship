@@ -6,14 +6,15 @@ warning('off','all');
 
 % my_power1 = -1.50e6;
 % my_power2 = -3.50e6;
-% my_power1 = -0.25e6;
-% my_power2 = -0.25e6;
-my_power1 = 0.00e6;
-my_power2 = 0.00e6;
+my_power1 = -0.25e6;
+my_power2 = -0.25e6;
+% my_power1 = 0.00e6;
+% my_power2 = 0.00e6;
 
-dist_factor = 0.5; % disturbance reduction factor 
-                   % (org +5MW Cons and -5MW gen)
-                   % we assume they are not simultaneous => 50% + 50%
+dist_factor = 0.50; % disturbance reduction factor 
+dist_factor = 0.75; % disturbance reduction factor 
+                    % (org +5MW Cons and -5MW gen)
+                    % we assume they are not simultaneous => 50% + 50%
 
 % ##################################### %
 % # CHECK my_power1 and my_power2 !!! #

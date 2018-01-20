@@ -1,7 +1,7 @@
 clear all;
 clc;
 
-load('../../Data/Generated Data/4 - Frequency/result_sim_new');
+load('../../Data/Generated Data/4 - Frequency/result_sim_new_75');
 
 
 % f_min
@@ -23,21 +23,21 @@ end
 
 k=1;
 while k<=length(STRUCT)
-    if(STRUCT(k).f_min < 47.0)
+    if(STRUCT(k).f_min < 48.65)
         STRUCT(k) = [];
         k = k-1;
     end
     k = k+1;
 end
 
-k=1;
-while k<=length(STRUCT)
-    if(STRUCT(k).f_min < fs(STRUCT(k).num_dies-2))
-        STRUCT(k) = [];
-        k = k-1;
-    end
-    k = k+1;
-end
+% k=1;
+% while k<=length(STRUCT)
+%     if(STRUCT(k).f_min < fs(STRUCT(k).num_dies-2))
+%         STRUCT(k) = [];
+%         k = k-1;
+%     end
+%     k = k+1;
+% end
 
 
 save('../../Data/Generated Data/4 - Frequency/result_sim','STRUCT');
