@@ -6,15 +6,15 @@ warning('off','all');
 
 % my_power1 = -1.50e6;
 % my_power2 = -3.50e6;
-my_power1 = -0.25e6;
-my_power2 = -0.25e6;
-% my_power1 = 0.00e6;
-% my_power2 = 0.00e6;
+% my_power1 = -1.25e6;
+% my_power2 = -1.25e6;
+my_power1 = 0.00e6;
+my_power2 = 0.00e6;
 
-dist_factor = 0.50; % disturbance reduction factor 
-dist_factor = 0.75; % disturbance reduction factor 
-                    % (org +5MW Cons and -5MW gen)
-                    % we assume they are not simultaneous => 50% + 50%
+dist_factor_gen = 0.50; % Gen  disturbance reduction factor 
+dist_factor_con = 0.50; % Cons disturbance reduction factor 
+                        % (org +5MW Cons and -5MW gen)
+                        % we assume they are not simultaneous => 50% + 50%
 
 % ##################################### %
 % # CHECK my_power1 and my_power2 !!! #
@@ -25,7 +25,7 @@ dist_factor = 0.75; % disturbance reduction factor
 % G_PV_steady   - C_steady      > -my_power2 %
 % ########################################## %
 
-f_acceptable = 45;
+f_acceptable = 47;
 
 % Noms de l'estructura d'informació    
     
@@ -55,11 +55,11 @@ range_PV = (my_params.P_PV_inst*1e3):-0.25e6:1e6;    % max available PV power (P
 range_ndies = 1:my_params.N_dies;       % number of diesel generators
 
 % range_bat = (my_params.P_bat_min:2200:my_params.P_bat_max)*1e3;
-% range_bat = (my_params.P_bat_max)*1e3;
+% % range_bat = (my_params.P_bat_max)*1e3;
 % range_PV = (my_params.P_PV_inst*1e3):-3.5e6:1e6;    % max available PV power (PV Curtailment - almost Setpoint)
 % range_ndies = 1:1:my_params.N_dies;       % number of diesel generators
 
-% range_bat = (my_params.P_bat_min)*1e3;
+% range_bat = (my_params.P_bat_max)*1e3;
 % range_PV = (my_params.P_PV_inst*1e3);    % max available PV power (PV Curtailment - almost Setpoint)
 % % range_PV = (my_params.P_PV_inst*1e3-7.5e6);    % max available PV power (PV Curtailment - almost Setpoint)
 % range_ndies = 12;       % number of diesel generators
@@ -72,9 +72,9 @@ clear my_params;
 
 % Definition of simulation event times:
 t_init_dies = 10; % loading event for cons and PV (from 0 -> initial)
-t_init      = 30; % disturbance event for cons and PV (initial -> disturb)
-% p_time_sim  = 50; % simulation duration (ends at 80s)
-p_time_sim  = 20; % simulation duration (ends at 80s)
+t_init      = 20; % disturbance event for cons and PV (initial -> disturb)
+p_time_sim  = 30; % simulation duration (ends at 80s)
+% p_time_sim  = 20; % simulation duration (ends at 50s)
 
 
 % warning about the number of simulations that can be done
@@ -119,8 +119,8 @@ for Setp_Batt = range_bat
             load('../../Data/Generated Data/3 - Changes/M_change_pos.mat')
             load('../../Data/Generated Data/3 - Changes/M_change_neg.mat')
             
-            change_con_pos     = dist_factor*change_con_pos;
-            change_gen_all_neg = dist_factor*change_gen_all_neg;
+            change_con_pos     = dist_factor_con*change_con_pos;
+            change_gen_all_neg = dist_factor_gen*change_gen_all_neg;
             
             % Increase in Consumption and decrease of generation
             consum_sim((t_init+1):(t_init+p_time_sim),1) = ((t_init+1):(t_init+p_time_sim))';
@@ -243,5 +243,5 @@ end
 STRUCT(1) = [];
 
 save('../../Data/Generated Data/4 - Frequency/result_sim','STRUCT');
-% save('../../Data/Generated Data/4 - Frequency/result_sim_new','STRUCT');
+% save('../../Data/Generated Data/4 - Frequency/result_sim_v2_100','STRUCT');
 

@@ -80,21 +80,47 @@ a.gen(:, 14) =  1*P_max; % Qc1max
 a.gen(:, 15) = -k*P_max; % Qc2min
 a.gen(:, 16) =  k*P_max; % Qc2max
 
+%% Add Control to PV and BATTERY:
+
+% Switch them to PU buses:
+
+a.bus([4,6,8],2) = 2;
+
+a.bus([4,6,8],3:4) = 0;
+
+
+% Add PV and Battery to Control:
+a.gen(4:6, :) = a.gen(1:3,:);
+a.gen(4:6, 1) = [4;8;6];
+a.gen(4:6, 9) = 1.01;
+a.gen(4:6,10) = 0.99;
+
+a.gen(4:5, 4) =  my_params.P_PV_inst*1e-3*0.5;
+a.gen(  6, 4) =  my_params.P_bat_max*1e-3;
+a.gen(4:5, 5) = -my_params.P_PV_inst*1e-3*0.5;
+a.gen(  6, 5) = -my_params.P_bat_max*1e-3;
+
+a.gen(4:6,11:16) = 0;
+
+a.gencost(4:6,:) = a.gencost(1:3,:);
+
+
 %% Save Case;
 
-savecase('my_case',a);
+% savecase('my_case',a); 
+savecase('../../Data/System Params/my_case',a);
 
 %% Scale with number of generators:
-
-inds = [4 5 9 10 11 12 13 14 15 16];
-for k=1:size(gens,1)
-    a.gen(k,inds) = a.gen(k,inds) * sum(ON_dies(gens(k,:)));
-end
-
-% b = runpf(a);
-% b = runopf(a);
-b = runopf(a, mpoption('verbose', 0, 'out.all', 0));
-
-losses = sum(real(get_losses(b)))
-volts  = b.bus(:, 8)
+% 
+% inds = [4 5 9 10 11 12 13 14 15 16];
+% for k=1:size(gens,1)
+%     a.gen(k,inds) = a.gen(k,inds) * sum(ON_dies(gens(k,:)));
+% end
+% 
+% % b = runpf(a);
+% % b = runopf(a);
+% b = runopf(a, mpoption('verbose', 0, 'out.all', 0));
+% 
+% losses = sum(real(get_losses(b)))
+% volts  = b.bus(:, 8)
 

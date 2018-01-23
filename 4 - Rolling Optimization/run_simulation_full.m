@@ -1,4 +1,5 @@
 clear all;
+clear simulate_PF;
 close all;
 clc;
 
@@ -10,7 +11,7 @@ T_intra =  T_EMS/my_params.N_intra;
 clear my_params;
 
 k  = 96;
-% k  = 59;
+k  = 30;
 
 % Simulation times:
 p_time_sim = T_EMS*k;
@@ -58,8 +59,13 @@ pv_set_sim = zeros(t_final,2);
 pv_set_sim(:,1) = 1:t_final;
 pv_set_sim(1:t_init,2) = [zeros(t_init_dies,1); repmat(P_PV_set(1,1),t_init-t_init_dies,1)]*1e3;
 
+% Secondly data for AVERAGE LOAD CONSUMPTION over scenarios:
+cons_avg_sim = zeros(t_final,2);
+cons_avg_sim(:,1) = 1:t_final;
+cons_avg_sim(1:t_init,2) = [zeros(t_init_dies,1); repmat(L_C(1,1),t_init-t_init_dies,1)]*1e3;
+
 % Clear the unecessary data:
-clear interval ON_dies P_bat_set P_dies P_PV P_PV_set SOC_bat status P_bat_cha P_bat_dis X_bat
+clear interval ON_dies P_bat_set P_dies P_PV P_PV_set SOC_bat status P_bat_cha P_bat_dis X_bat L_C
 clear cons_seg gen_seg
 
 %% Loading Optimization Setpoints:
@@ -70,10 +76,11 @@ for q=1:k
     ts = t_init+(q-1)*T_EMS+(1:T_EMS);
     
     num_dies_sim(ts,2) = repmat(sum(ON_dies(1,:)),T_EMS,1);
-    bat_set_sim(ts,2) = reshape(repmat(P_bat_set(1,:),T_intra,1),[T_EMS,1])*1e3;
-    pv_set_sim(ts,2) = reshape(repmat(P_PV_set(1,:),T_intra,1),[T_EMS,1])*1e3;
+    bat_set_sim(ts,2)  = reshape(repmat(P_bat_set(1,:),T_intra,1),[T_EMS,1])*1e3;
+    pv_set_sim(ts,2)   = reshape(repmat(P_PV_set(1,:),T_intra,1),[T_EMS,1])*1e3;
+    cons_avg_sim(ts,2) = reshape(repmat(L_C(1,:),T_intra,1),[T_EMS,1])*1e3;
     
-    clear interval ON_dies P_bat_set P_dies P_PV P_PV_set SOC_bat status P_bat_cha P_bat_dis X_bat
+    clear interval ON_dies P_bat_set P_dies P_PV P_PV_set SOC_bat status P_bat_cha P_bat_dis X_bat L_C
 end
 
 %% Run Simulation:

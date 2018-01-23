@@ -15,15 +15,25 @@ warning('off','all');
 
 %% Load Power Flow Case:
 
-a = loadcase('my_case');
+a = loadcase('../../Data/System Params/my_case');
+
+% Redefine Min Voltage:
+a.bus(:,13) = 0.925;
+% a.bus([5,7,9],13) = 0.70;
+% a.bus(:,13) = 0.91;
+% a.bus(:,13) = 0.95;
+
 inds = [4 5 9 10 11 12 13 14 15 16]; % indices for generator power scaling
 
-a_gen_org = a.gen(1,:);
+a_gen_org_d = a.gen(1,:);
+a_gen_org_p = a.gen(4,:);
+a_gen_org_b = a.gen(6,:);
 
-cos_fi = 0.95;
+cos_fi = 0.95; % for consumption!!!
 tan_fi = tan(acos(cos_fi));
 
-P_cons_MAX = 11.5;
+P_cons_MAX = 12.5;
+% P_cons_MAX = 15;
 
 %% Power Flow Definition:
 
@@ -61,8 +71,10 @@ P_dies_min = my_params.P_dies_min/1e3;
 
 range_bat   = (my_params.P_bat_min:1100:my_params.P_bat_max)/1e3;
 range_PV    = (my_params.P_PV_inst/1e3):-1.5:1;
-deltas = [0.15, 0.35, 0.5, 0.65, 0.85];
 deltas = [0.2, 0.35, 0.5, 0.65, 0.8];
+
+% range_bat   = (my_params.P_bat_min:2200:my_params.P_bat_max)/1e3;
+% range_PV    = (my_params.P_PV_inst/1e3):-3:1;
 
 % Divide Dies Generator in 3 groups (for buses):
 groups = 3;
@@ -71,9 +83,6 @@ for k = (groups-1):-1:1
     n_gens = [n_gens; round((my_params.N_dies - sum(n_gens)) / k)];
 end
 n_gens = sort(n_gens,'descend');
-
-% range_bat   = (my_params.P_bat_min:2200:my_params.P_bat_max)/1e3;
-% range_PV    = (my_params.P_PV_inst/1e3):-3:1;
 
 tot = n_gens(1)*(n_gens(2)+1)*(n_gens(3)+1)*length(range_PV)*length(range_bat)*length(deltas);
 tot = n_gens(1)*n_gens(2)*n_gens(3)*length(range_PV)*length(range_bat)*length(deltas);
@@ -86,9 +95,9 @@ for d2 = 1:n_gens(2)
 for d3 = 1:n_gens(3)
     
     % Scale the Capability Curve Params:
-    a.gen(1,inds) = a_gen_org(inds)*d1;
-    a.gen(2,inds) = a_gen_org(inds)*d2;
-    a.gen(3,inds) = a_gen_org(inds)*d3;
+    a.gen(1,inds) = a_gen_org_d(inds)*d1;
+    a.gen(2,inds) = a_gen_org_d(inds)*d2;
+    a.gen(3,inds) = a_gen_org_d(inds)*d3;
     
     % If we have no generation, switch the buses to PQ (0+j0)MVA:
     a.bus(2,2)= 1*(d2==0) + 2*(d2~=0);
@@ -97,18 +106,24 @@ for d3 = 1:n_gens(3)
     % Loop over all PV generation:
     for P_pv = range_PV
         
+        Q_PV_max = sqrt(max((my_params.P_PV_inst*1e-3*0.5)^2-(P_pv*0.5)^2 , 0));
+                
         % Input PV Generation (neg. load):
-        a.bus(4,3) = -P_pv*0.5;
-        a.bus(4,4) =  0; % assuming cos_fi=1
-        a.bus(8,3) = -P_pv*0.5;
-        a.bus(8,4) =  0; % assuming cos_fi=1
+        a.gen(4:5, 4) =  Q_PV_max;
+        a.gen(4:5, 5) = -Q_PV_max;
+        a.gen(4:5, 9) =  P_pv*0.5*1.01;
+        a.gen(4:5,10) =  P_pv*0.5*0.99;
         
         % Loop over all Battery Setpoints:
         for P_bat = range_bat
             
+            Q_BAT_max = sqrt(max((my_params.P_bat_max*1e-3)^2-(P_bat)^2 , 0));
+            
             % Input Battery Cons (neg. load):
-            a.bus(6,3) = -P_bat;
-            a.bus(6,4) =  0; % assuming cos_fi=1
+            a.gen(6, 4) =  Q_BAT_max;
+            a.gen(6, 5) = -Q_BAT_max;
+            a.gen(6, 9) =  P_bat*1.01;
+            a.gen(6,10) =  P_bat*0.99;
             
             % Loop over different Consumption:
             for delta = deltas
@@ -137,7 +152,8 @@ for d3 = 1:n_gens(3)
                         
                         U_min  = min(b.bus(:, 8));
                         % U_max  = max(b.bus(:, 8));
-                        U_max  = max(b.bus(4:end, 8)); %disregard dies bus
+                        % U_max  = max(b.bus(4:end, 8)); %disregard dies bus
+                        U_max  = max(b.bus([5,7,9], 8)); %disregard dies bus
                         P_loss = sum(real(get_losses(b)));
                         
                         STRUCT(length(STRUCT)+1) = struct(field0,d1+d2+d3,field1,d1,field2,d2,field3,d3,field4,P_bat,field5,P_pv,field6,P_cons,field7,U_min,field8,U_max,field9,P_loss);
@@ -153,6 +169,7 @@ end
 
 STRUCT(1) = [];
 save('../../Data/Generated Data/6 - Power Flows/opt_flow_sim','STRUCT');
+% save('../../Data/Generated Data/6 - Power Flows/opt_flow_sim_u_min','STRUCT');
 
 %% 
 

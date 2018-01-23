@@ -41,11 +41,12 @@ SOC_max  = 1.0;         %
 SOC_init = 0.9;
 
 % ### PV Generation:
-P_PV_inst = 15000;
+P_PV_inst = 15000; % Installed Power [kW]
+rr_PV     = 100;   % Max Ramp Rate   [%/min]
 
 % ### Frequency:
-% f_min = 48.75;
-% f_max = 51.25;
+f_min = 48.5;
+f_max = 51.5;
 f_min = 49;
 f_max = 51;
 
