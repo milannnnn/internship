@@ -18,10 +18,7 @@ warning('off','all');
 a = loadcase('../../Data/System Params/my_case');
 
 % Redefine Min Voltage:
-a.bus(:,13) = 0.925;
-% a.bus([5,7,9],13) = 0.70;
-% a.bus(:,13) = 0.91;
-% a.bus(:,13) = 0.95;
+% a.bus(:,13) = 0.925;
 
 inds = [4 5 9 10 11 12 13 14 15 16]; % indices for generator power scaling
 
@@ -84,7 +81,7 @@ for k = (groups-1):-1:1
 end
 n_gens = sort(n_gens,'descend');
 
-tot = n_gens(1)*(n_gens(2)+1)*(n_gens(3)+1)*length(range_PV)*length(range_bat)*length(deltas);
+% tot = n_gens(1)*(n_gens(2)+1)*(n_gens(3)+1)*length(range_PV)*length(range_bat)*length(deltas);
 tot = n_gens(1)*n_gens(2)*n_gens(3)*length(range_PV)*length(range_bat)*length(deltas);
 prog = 1;
 
@@ -100,30 +97,30 @@ for d3 = 1:n_gens(3)
     a.gen(3,inds) = a_gen_org_d(inds)*d3;
     
     % If we have no generation, switch the buses to PQ (0+j0)MVA:
-    a.bus(2,2)= 1*(d2==0) + 2*(d2~=0);
-    a.bus(3,2)= 1*(d3==0) + 2*(d3~=0);
+    % a.bus(2,2)= 1*(d2==0) + 2*(d2~=0);
+    % a.bus(3,2)= 1*(d3==0) + 2*(d3~=0);
     
     % Loop over all PV generation:
     for P_pv = range_PV
         
-        Q_PV_max = sqrt(max((my_params.P_PV_inst*1e-3*0.5)^2-(P_pv*0.5)^2 , 0));
-                
+        Q_PV_max = 0.5*sqrt(max((my_params.P_PV_inst*1e-3)^2-P_pv^2 , 0));
+        
         % Input PV Generation (neg. load):
         a.gen(4:5, 4) =  Q_PV_max;
         a.gen(4:5, 5) = -Q_PV_max;
-        a.gen(4:5, 9) =  P_pv*0.5*1.01;
-        a.gen(4:5,10) =  P_pv*0.5*0.99;
+        a.gen(4:5, 9) =  P_pv*0.5+1e-3;
+        a.gen(4:5,10) =  P_pv*0.5-1e-3;
         
         % Loop over all Battery Setpoints:
         for P_bat = range_bat
             
-            Q_BAT_max = sqrt(max((my_params.P_bat_max*1e-3)^2-(P_bat)^2 , 0));
+            Q_BAT_max = sqrt(max((my_params.P_bat_max*1e-3)^2-P_bat^2 , 0));
             
             % Input Battery Cons (neg. load):
             a.gen(6, 4) =  Q_BAT_max;
             a.gen(6, 5) = -Q_BAT_max;
-            a.gen(6, 9) =  P_bat*1.01;
-            a.gen(6,10) =  P_bat*0.99;
+            a.gen(6, 9) =  P_bat+1e-3;
+            a.gen(6,10) =  P_bat-1e-3;
             
             % Loop over different Consumption:
             for delta = deltas
@@ -145,7 +142,8 @@ for d3 = 1:n_gens(3)
                 % Check is the consumption positive:
                 if P_cons > 0 && P_cons < P_cons_MAX % max scenario - 11.2MW
                     
-                    b = runopf(a, mpoption('verbose', 0, 'out.all', 0));
+                    % b = runopf(a, mpoption('verbose', 0, 'out.all', 0));
+                    b = runopf(a, mpoption('verbose', 0, 'out.all', 0, 'opf.ac.solver', 'FMINCON'));
                     
                     % If the flow converged
                     if b.success
@@ -153,7 +151,7 @@ for d3 = 1:n_gens(3)
                         U_min  = min(b.bus(:, 8));
                         % U_max  = max(b.bus(:, 8));
                         % U_max  = max(b.bus(4:end, 8)); %disregard dies bus
-                        U_max  = max(b.bus([5,7,9], 8)); %disregard dies bus
+                        U_max  = max(b.bus([5,7,9], 8)); %disregard gen bus
                         P_loss = sum(real(get_losses(b)));
                         
                         STRUCT(length(STRUCT)+1) = struct(field0,d1+d2+d3,field1,d1,field2,d2,field3,d3,field4,P_bat,field5,P_pv,field6,P_cons,field7,U_min,field8,U_max,field9,P_loss);

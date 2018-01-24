@@ -7,20 +7,15 @@ a = loadcase('case9');
 %% Grid Params:
 
 % Base Power and Base Voltage:
-a.baseMVA = 10;
+a.baseMVA   = 10;
 a.bus(:,10) = 10;
 
 ks = [1 1.6 2.95 1.02 1.75 1.25 1.09 2.8 1.5]'; % Branch Imp Ratios
-% z  = [0.0086	0.0030	0.0025]; % Nexans 20kV, 3x70 mm^2
-% ks = ks*12; % Upscaling distances
 z  = [0.0342 0.0124 0.0009]; % Nexans 10kV, 3x70 mm^2
-% ks = ks*3.2; % Upscaling distances
-ks = ks*3; % Upscaling distances
-ks = ks*2.5; % Upscaling distances
+% ks = ks*2.5; % Upscaling distances
 a.branch(:,3:5) = ks*z;
 
 a.bus(:,3:4) = a.bus(:,3:4)/30; % P_l and Q_l
-% a.gen(:,6) =  [1.08 1.08 1.08]; % U_g
 
 % Generation Setpoints:
 a.gen(:,6) =  [1.00 1.00 1.00]; % U_g
@@ -30,10 +25,10 @@ a.gen(:,2:3) =  3; % P_g, Q_g
 %% OPF Params:
 
 % Min / Max Voltage:
-a.bus(1:3,12) = 1.1;
-a.bus([4,6,8],12) = 1.1;
-a.bus([5,7,9],12) = 1.1;
-a.bus(:,13) = 0.90;
+a.bus(1:3,12)     = 1.10; % Diesel
+a.bus([4,6,8],12) = 1.10; % PV + Bat
+a.bus([5,7,9],12) = 1.05; % Load
+a.bus(:,13)       = 0.925;% All
 
 % Min / Max Power Injection:
 a.gen(:,2:3) =  0; % P_g, Q_g
@@ -51,7 +46,7 @@ a.gencost(3,5:7) = a.gencost(1,5:7);
 
 
 
-%% Capability Curves:
+%% Diesel Capability Curves:
 
 my_params = load('../../Data/System Params/params');
 
@@ -80,7 +75,7 @@ a.gen(:, 14) =  1*P_max; % Qc1max
 a.gen(:, 15) = -k*P_max; % Qc2min
 a.gen(:, 16) =  k*P_max; % Qc2max
 
-%% Add Control to PV and BATTERY:
+%% PV and BATTERY Capability Curves:
 
 % Switch them to PU buses:
 
