@@ -9,7 +9,7 @@ T_EMS   = (24*3600)/my_params.N_EMS;
 T_intra =  T_EMS/my_params.N_intra;
 clear my_params;
 
-k = 45;
+k = 30;
 
 % Simulation times:
 p_time_sim = T_EMS*k;
@@ -30,6 +30,7 @@ t_final = t_init+p_time_sim;
 load('../../Data/Generated Data/5 - Optimization/solutions/sol_1');
 load('../../Data/Generated Data/1 - Secondly/cons_seg');
 load('../../Data/Generated Data/1 - Secondly/gen_seg');
+my_params = load('../../Data/System Params/params');
 
 % Real secondly consumption data (immediately fully loaded):
 consum_sim = zeros(t_final,2);
@@ -56,9 +57,14 @@ pv_set_sim = zeros(t_final,2);
 pv_set_sim(:,1) = 1:t_final;
 pv_set_sim(1:t_init,2) = [zeros(t_init_dies,1); repmat(P_PV_set(1,1),t_init-t_init_dies,1)]*1e3;
 
+% Real secondly consumption data (immediately fully loaded):
+GS_min_ratio_sim = zeros(t_final,2);
+GS_min_ratio_sim(:,1) = 1:t_final;
+GS_min_ratio_sim(:,2) = [zeros(t_init,1); repmat(my_params.P_dies_min/my_params.P_dies_max,t_final-t_init,1)];
+
 % Clear the unecessary data:
 clear interval ON_dies P_bat_set P_dies P_PV P_PV_set SOC_bat status P_bat_cha P_bat_dis X_bat
-clear cons_seg gen_seg
+clear cons_seg gen_seg my_params
 
 %% Loading Optimization Setpoints:
 
@@ -91,7 +97,7 @@ set_param('HEMS_part','SaveFinalState','on','FinalStateName','prev_st','SaveComp
 set_param('HEMS_part', 'StopTime', sprintf('%d',t_final));
 sim('HEMS_part');
 
-save(['../../Data/Generated Data/5 - Optimization/states/state_' num2str(k)],'prev_st');
+% save(['../../Data/Generated Data/5 - Optimization/states/state_' num2str(k)],'prev_st');
 
 % f_max = max(F_HZ.Data(F_HZ.Time>t_init));
 % f_min = min(F_HZ.Data(F_HZ.Time>t_init));

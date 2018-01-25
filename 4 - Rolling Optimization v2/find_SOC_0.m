@@ -42,6 +42,7 @@ t_final = t_init+p_time_sim;
 load('../../Data/Generated Data/5 - Optimization/solutions/sol_1');
 load('../../Data/Generated Data/1 - Secondly/cons_seg');
 load('../../Data/Generated Data/1 - Secondly/gen_seg');
+my_params = load('../../Data/System Params/params');
 
 % Real secondly consumption data (immediately fully loaded):
 consum_sim = zeros(t_final,2);
@@ -68,9 +69,14 @@ pv_set_sim = zeros(t_final,2);
 pv_set_sim(:,1) = 1:t_final;
 pv_set_sim(1:t_init,2) = [zeros(t_init_dies,1); repmat(P_PV_set(1,1),t_init-t_init_dies,1)]*1e3;
 
+% Real secondly consumption data (immediately fully loaded):
+GS_min_ratio_sim = zeros(t_final,2);
+GS_min_ratio_sim(:,1) = 1:t_final;
+GS_min_ratio_sim(:,2) = [zeros(t_init,1); repmat(my_params.P_dies_min/my_params.P_dies_max,t_final-t_init,1)];
+
 % Clear the unecessary data:
 clear interval ON_dies P_bat_set P_dies P_PV P_PV_set SOC_bat status P_bat_cha P_bat_dis X_bat
-clear cons_seg gen_seg
+clear cons_seg gen_seg my_params
 
 % ### Loading Optimization Setpoints:
 

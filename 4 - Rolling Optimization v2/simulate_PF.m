@@ -174,7 +174,8 @@ if ((cnsc~=P_cons_sec)||(pvsc~=P_pv_sec)||(btsc~=P_bat_sec))&&pf
         y_pr(3) = sum(real(get_losses(c)))*1e6; % P_loss
     else
         if nd~=0 && cnsc~=0 % skip the initialization
-            disp('- PF Diverged');
+            % disp('- PF Diverged');
+            disp(['- PF Diverged  (n=',num2str(n_dies),', pv=',num2str(P_pv_sec),' bat=',num2str(P_bat_sec),' con=',num2str(P_cons_sec),')']);
         end
     end
 end
