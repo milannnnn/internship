@@ -10,7 +10,8 @@ T_EMS   = (24*3600)/my_params.N_EMS;
 T_intra =  T_EMS/my_params.N_intra;
 clear my_params;
 
-k_st = 36;
+% k_st = 01;
+k_st = 56;
 k_en = 96;
 
 k = k_en-k_st+1;

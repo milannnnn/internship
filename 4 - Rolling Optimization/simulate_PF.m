@@ -35,7 +35,9 @@ if isempty(my_init)
     % a.bus([5,7,9],12) = 1.05;
     % a.bus(:,13) = 0.925;
     
-    % a.branch(:,3:5) = a.branch(:,3:5)*0.4;
+    % a.branch(:,3) = a.branch(:,3)*3;
+    % a.branch(:,4) = a.branch(:,4)*3;
+    % a.branch(:,5) = a.branch(:,5)*1;
 
     % Memorize Generator Characteristics:
     inds = [4 5 9 10 11 12 13 14 15 16]; % indices for generator power scaling

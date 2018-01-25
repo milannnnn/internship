@@ -12,8 +12,10 @@ a.bus(:,10) = 10;
 
 ks = [1 1.6 2.95 1.02 1.75 1.25 1.09 2.8 1.5]'; % Branch Imp Ratios
 z  = [0.0342 0.0124 0.0009]; % Nexans 10kV, 3x70 mm^2
-% ks = ks*2.5; % Upscaling distances
 a.branch(:,3:5) = ks*z;
+a.branch(:,3) = a.branch(:,3)*2.75;
+a.branch(:,4) = a.branch(:,4)*2.75;
+a.branch(:,5) = a.branch(:,5)*1;
 
 a.bus(:,3:4) = a.bus(:,3:4)/30; % P_l and Q_l
 
