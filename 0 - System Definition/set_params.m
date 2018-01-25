@@ -47,8 +47,8 @@ rr_PV     = 100;   % Max Ramp Rate   [%/min]
 % ### Frequency:
 f_min = 48.5;
 f_max = 51.5;
-f_min = 49;
-f_max = 51;
+f_min = 49.25;
+f_max = 50.75;
 
 % ### Voltage:
 U_min_def = 0.9;
