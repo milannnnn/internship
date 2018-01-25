@@ -6,13 +6,13 @@ warning('off','all');
 
 % my_power1 = -1.50e6;
 % my_power2 = -3.50e6;
-% my_power1 = -1.25e6;
-% my_power2 = -1.25e6;
+% my_power1 = -0.25e6;
+% my_power2 = -0.25e6;
 my_power1 = 0.00e6;
 my_power2 = 0.00e6;
 
-dist_factor_gen = 0.50; % Gen  disturbance reduction factor 
-dist_factor_con = 0.50; % Cons disturbance reduction factor 
+dist_factor_gen = 1.00; % Gen  disturbance reduction factor 
+dist_factor_con = 1.00; % Cons disturbance reduction factor 
                         % (org +5MW Cons and -5MW gen)
                         % we assume they are not simultaneous => 50% + 50%
 
