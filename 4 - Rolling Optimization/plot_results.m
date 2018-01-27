@@ -86,7 +86,7 @@ figure();
 plot(0,0);
 plot(n_dies);
 xlabel('Time [s]'); xlim([t_st t_en]); title ('Num of Dies Generators'); grid minor;
-ylabel('N_{DIES}');
+ylabel('N_{DIES}'); ylim([1 13]);
 % legend('','');
 
 %%
