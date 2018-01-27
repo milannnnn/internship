@@ -64,8 +64,6 @@ range_ndies = 1:my_params.N_dies;       % number of diesel generators
 % % range_PV = (my_params.P_PV_inst*1e3-7.5e6);    % max available PV power (PV Curtailment - almost Setpoint)
 % range_ndies = 12;       % number of diesel generators
 
-clear my_params;
-
 % range_bat =  -0000000;    % potencia inicial de la bateria
 % range_PV = 3000000;    % potencia màxima fotovoltaica
 % range_ndies = 2;                      % número de generadors dièsel
@@ -76,6 +74,15 @@ t_init      = 20; % disturbance event for cons and PV (initial -> disturb)
 p_time_sim  = 30; % simulation duration (ends at 80s)
 % p_time_sim  = 20; % simulation duration (ends at 50s)
 
+% Diesel Min Load Ratio:
+GS_min_ratio_sim = zeros(t_init+p_time_sim,2);
+GS_min_ratio_sim(:,1) = 1:(t_init+p_time_sim);
+GS_min_ratio_sim(:,2) = [zeros(t_init,1); repmat(my_params.P_dies_min/my_params.P_dies_max,p_time_sim,1)];
+% GS_min_ratio_sim(:,2) = [zeros(t_init_dies,1); repmat(my_params.P_dies_min/my_params.P_dies_max,p_time_sim+t_init-t_init_dies,1)];
+
+min_dies_req = my_params.P_dies_min*1e3;
+
+clear my_params;
 
 % warning about the number of simulations that can be done
 num_sim = length(range_bat)*length(range_PV)*length(range_ndies);
@@ -175,6 +182,8 @@ for Setp_Batt = range_bat
             
             P_loss_max = psi_loss_i*1e6+psi_loss_d*1e6*n_diesels+psi_loss_p*min(potmax_pv_sim((lenad-100):end,2))+psi_loss_b*Setp_Batt+psi_loss_c*max(consum_sim((lenad-100):end,2));
             P_loss_min = psi_loss_i*1e6+psi_loss_d*1e6*n_diesels+psi_loss_p*max(potmax_pv_sim((lenad-100):end,2))+psi_loss_b*Setp_Batt+psi_loss_c*min(consum_sim((lenad-100):end,2));
+            
+            % my_power2=min_dies_req*n_diesels;
             
             while  (cons_init>0) && (  ((max(consum_sim((lenad-100):end,2))+P_loss_max-min(potmax_pv_sim((lenad-100):end,2))-n_diesels*P_nom_u_GS-Setp_Batt)>-my_power1) ...
                                      ||((min(consum_sim((lenad-100):end,2))+P_loss_min-max(potmax_pv_sim((lenad-100):end,2))-Setp_Batt)<my_power2) )

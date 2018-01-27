@@ -12,8 +12,8 @@ clear my_params;
 
 k_st = 01;
 k_en = 96;
-% k_st = 1;
-% k_en =70;
+% k_st = 36;
+% k_en = 37;
 
 k = k_en-k_st+1;
 
@@ -119,6 +119,9 @@ toc;
 % % f_max = max(F_HZ.Data(F_HZ.Time>t_init));
 % % f_min = min(F_HZ.Data(F_HZ.Time>t_init));
 SOC_0_next = SOC_act.Data(end)
+
+save('../../Data/Generated Data/7 - Simulation/signals','logsout');
+
 
 %% Test Scheme:
 % clc;
