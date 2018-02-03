@@ -69,7 +69,7 @@ pv_set_sim = zeros(t_final,2);
 pv_set_sim(:,1) = 1:t_final;
 pv_set_sim(1:t_init,2) = [zeros(t_init_dies,1); repmat(P_PV_set(1,1),t_init-t_init_dies,1)]*1e3;
 
-% Real secondly consumption data (immediately fully loaded):
+% Flag for activating minimum dies generation constraint (required for initialization):
 GS_min_ratio_sim = zeros(t_final,2);
 GS_min_ratio_sim(:,1) = 1:t_final;
 GS_min_ratio_sim(:,2) = [zeros(t_init,1); repmat(my_params.P_dies_min/my_params.P_dies_max,t_final-t_init,1)];
@@ -102,6 +102,8 @@ end
 % sim('HEMS_v2',[],options);
 
 % ### Run Simulation Partial:
+
+clear simulate_PF;
 
 parameters_balanc;
 options = simset('SrcWorkspace','current');

@@ -2,8 +2,9 @@ clear all;
 clear simulate_PF;
 close all;
 clc;
-
 warning('off','all');
+
+%%
 
 my_params = load('../../Data/System Params/params');
 T_EMS   = (24*3600)/my_params.N_EMS;

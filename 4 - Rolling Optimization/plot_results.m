@@ -64,6 +64,7 @@ xlabel('Time [s]'); xlim([t_st t_en]); title ('Consumption'); grid minor;
 ylabel('P_{CONS} [MW]');
 legend('Actual','Avg Forecast');
 
+
 %%
 figure();
 plot(0,0);
@@ -122,5 +123,5 @@ legend('Max','Min');
 % ylabel('');
 % % legend('','');
 
-
-
+%%
+% SoC.Data(SoC.Time==20+900*31)

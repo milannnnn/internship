@@ -9,7 +9,7 @@ T_EMS   = (24*3600)/my_params.N_EMS;
 T_intra =  T_EMS/my_params.N_intra;
 clear my_params;
 
-k = 30;
+k = 31;
 
 % Simulation times:
 p_time_sim = T_EMS*k;
@@ -83,6 +83,7 @@ end
 %% Run Simulation:
 
 parameters_balanc;
+clear simulate_PF;
 load_system('HEMS_part');
 
 if k == 0
@@ -97,7 +98,7 @@ set_param('HEMS_part','SaveFinalState','on','FinalStateName','prev_st','SaveComp
 set_param('HEMS_part', 'StopTime', sprintf('%d',t_final));
 sim('HEMS_part');
 
-% save(['../../Data/Generated Data/5 - Optimization/states/state_' num2str(k)],'prev_st');
+save(['../../Data/Generated Data/5 - Optimization/states/state_' num2str(k)],'prev_st');
 
 % f_max = max(F_HZ.Data(F_HZ.Time>t_init));
 % f_min = min(F_HZ.Data(F_HZ.Time>t_init));

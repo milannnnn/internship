@@ -48,7 +48,7 @@ if isempty(cn_opf)
 end
 
 if isempty(y_pr)
-    y_pr = [1,1,0,0];
+    y_pr = [1,1,0];
 end
 
 %% Optimal Power Flow Setpoints:
@@ -170,7 +170,6 @@ if ((cnsc~=P_cons_sec)||(pvsc~=P_pv_sec)||(btsc~=P_bat_sec))&&pf
         y_pr(1) = min(c.bus(:, 8));             % U_min
         y_pr(2) = max(c.bus(:, 8));             % U_max
         y_pr(3) = sum(real(get_losses(c)))*1e6; % P_loss
-        y_pr(4) = sum(c.gen(:,3))*1e6;          % Q_gen_tot
     else
         if nd_opf~=0 && cnsc~=0 % skip the initialization
             disp('- PF Diverged');
@@ -182,7 +181,6 @@ end
 % To stabilize frequecy initialization (first 10s before act. simulation)
 if P_cons_sec==0
     y_pr(3) = 0;
-    y_pr(4) = 0;
 end
 
 y = y_pr;
