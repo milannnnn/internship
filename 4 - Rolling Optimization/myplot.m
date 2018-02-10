@@ -3,8 +3,11 @@ function [] = myplot(name)
 %   Detailed explanation goes here
 fig = gcf;
 fig.PaperUnits = 'centimeters';
-fig.PaperSize = [20 10];
-fig.PaperPosition = [0-0.25 0+0.35 20-0.10 10-0.65];
+x = 20;
+y = 8;
+fig.PaperSize = [x y];
+% fig.PaperPosition = [0-0.25 0+0.35 x-0.10 y-0.65]; %y=10
+fig.PaperPosition = [0-0.25 0+0.6 x-0.10 y-1.0];
 
 ax = gca;
 outerpos = ax.OuterPosition;
